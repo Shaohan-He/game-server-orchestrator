@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">🎮 Game Fleet Director</h1>
-  <p align="center"><strong>游戏服舰队生命周期管理 / Game Server Fleet Lifecycle Manager & Player-Aware Autoscaler for Kubernetes</strong></p>
+  <p align="center"><strong>游戏服舰队生命周期管理 / Game Server Fleet Lifecycle Manager for Kubernetes</strong></p>
 </p>
 
 <p align="center">
@@ -8,132 +8,104 @@
   <img src="https://img.shields.io/badge/kubernetes-1.28%2B-326CE5" alt="K8s 1.28+">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License">
   <img src="https://img.shields.io/badge/platform-linux%2Famd64-lightgrey" alt="Linux/amd64">
-  <img src="https://github.com/noneedtostudy/game-server-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI">
+  <img src="https://github.com/290298661-pixel/game-server-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI">
 </p>
-
----
-
-## 目录 / Table of Contents
-
-- [概述](#概述)
-- [快速开始](#快速开始)
-- [部署前必改配置](#部署前必改配置)
-- [功能模块](#功能模块)
-- [架构](#架构)
-- [CRD 设计](#crd-设计)
-- [配置说明](#配置说明)
-- [开发](#开发)
-- [贡献](#贡献)
-- [许可证](#许可证)
-- [English](#english)
 
 ---
 
 ## 概述
 
-**Game Fleet Director** 是一款面向游戏服（game server）的 Kubernetes 舰队级生命周期管理工具。它以 K8s Operator 模式实现玩家感知的弹性伸缩、优雅排水与暖池分配——弥合通用自动伸缩器（HPA/VPA）与有状态游戏负载之间的语义鸿沟。
+**Game Fleet Director** 是 K8s Operator，管理游戏服的扩缩容、排水和分配。通用 HPA 看不懂游戏逻辑——一个满员服的 40% CPU 要保护，一个空闲服的 30% CPU 可以回收。HPA 也看不懂玩家在线——直接 `kubectl delete pod` 会踢人下线。
 
-### 为什么需要 Game Fleet Director？
+Game Fleet Director 理解这些语义：以玩家数为主要伸缩指标、三阶段排水不丢一个玩家、预热暖池让匹配器即时分配。
 
-[node-health-watcher](https://github.com/noneedtostudy/node-health-watcher) 解决了"什么时候该关注"——当节点异常、磁盘告警或 OOM 事件发生时，它会推送 IM 告警。[node-guardian](https://github.com/noneedtostudy/node-guardian) 解决了"怎么排查修复"——当你 SSH 进故障节点时，有成套的诊断与加固工具。
+### 它在工具链中的位置
 
-但两者都没有解决**"谁来操作游戏服本身"**：
+Game Fleet Director 是 [三部曲](https://github.com/290298661-pixel) 的**第三环**——"行动层"：
 
-- 你不敢让 HPA 按 CPU 决策——一个满员对局的游戏服 40% CPU 需要保护，一个空闲服 30% CPU 可以回收
-- 你不能直接 `kubectl delete pod` ——上面还有玩家在线
-- 你需要匹配器（matchmaker）能随时分配到一台已经预热好的游戏服，而不用等 Pod 冷启动 30 秒
-- 你需要扩缩容决策考虑节点健康状态——节点已经 NotReady 了还往上调度新服？
+| 项目 | 语言 | 回答的问题 |
+|------|------|-----------|
+| [Node Guardian](https://github.com/290298661-pixel/node-guardian) | Bash | 出了故障怎么排查和修复？ |
+| [Node Health Watcher](https://github.com/290298661-pixel/node-health-watcher) | Python | 什么时候该去排查？ |
+| **Game Fleet Director** ← 你在这里 | Go | 谁来操作游戏服本身？ |
 
-**Game Fleet Director 填补了这最后一环：** 它理解游戏服的语义——对局、玩家会话、暖池、排水超时——并把这些编码为 K8s 原生的声明式 CRD 和 Controller。
-
-### 与现有项目的三部曲关系
-
-| 项目 | 语言 | 回答的问题 | 运维阶段 |
-|------|------|-----------|---------|
-| **Node Guardian** | Bash | 出了故障怎么排查和修复？ | 响应 |
-| **Node Health Watcher** | Python | 什么时候该去排查？ | 检测 |
-| **Game Fleet Director** | Go | 谁来操作游戏服本身？ | 行动 |
+**选 Go + K8s Operator 是因为** controller-runtime 是社区标准库，CRD + Controller 模式天然适合 GitOps。选 Operator 而非 CronJob 是因为排水需要状态机跨 reconcile 周期持久化，CronJob 的无状态模型承载不了。
 
 ### 核心原则
 
-| 原则 | 实现方式 |
-|------|---------|
-| **玩家感知伸缩** | 以玩家在线数为主维度决策扩缩容，CPU/内存仅作为辅助参考 |
-| **优雅排水** | 三阶段排水协议：拒新对局 → 等待活跃对局结束 → 回收 Pod，绝不暴力杀服 |
-| **暖池机制** | 维护 N 台预热就绪的游戏服，匹配器可即时分配，消除冷启动延迟 |
-| **声明式管理** | 基于 K8s CRD 定义舰队、伸缩策略和分配请求，GitOps 友好 |
-| **节点健康感知** | 集成 Node Health Watcher 健康端点，扩缩容决策过滤不健康节点 |
-| **防御性控制循环** | Controller 支持干运行、速率限制、熔断，单次 reconcile 失败不阻塞后续循环 |
+| 原则 | 实现 |
+|------|------|
+| **玩家感知伸缩** | 以在线玩家数为主维度决策，CPU/内存仅作辅助参考 |
+| **优雅排水** | Cordon → Drain → Decommission 三阶段，绝不暴力杀有人的服 |
+| **暖池** | N 台预热就绪的游戏服等着，匹配器拿来就用，零冷启动 |
+| **声明式** | 三个 CRD：Fleet / Policy / Allocation，`kubectl apply` 搞定一切 |
+| **节点健康感知** | 集成 NHW 端点，扩缩容自动跳过不健康节点 |
+| **防御性** | 干运行、令牌桶限流、熔断器，单次 reconcile 失败不阻塞后续 |
 
 ---
 
 ## 快速开始
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/noneedtostudy/game-server-orchestrator.git
-cd game-server-orchestrator
+git clone https://github.com/290298661-pixel/game-server-orchestrator.git && cd game-server-orchestrator
+go mod tidy && make build
 
-# 2. 下载 Go 依赖（国内用户自动使用 goproxy.cn 代理，见 Makefile）
-go mod tidy
+# 编辑 Makefile 的 REGISTRY 为你的镜像仓库地址，然后构建推送
+make docker-build TAG=v0.1.0 && make docker-push TAG=v0.1.0
 
-# 3. 构建二进制
-make build
-
-# 4. 编辑 Makefile 第一行，将 REGISTRY 改为你自己的阿里云 ACR / 腾讯云 TCR / 华为云 SWR 地址
-#    REGISTRY ?= registry.cn-beijing.aliyuncs.com/你的名称空间
-
-# 5. 构建并推送镜像
-make docker-build TAG=v0.1.0
-make docker-push  TAG=v0.1.0
-
-# 6. 编辑 deploy/kustomization.yaml，将镜像名称改为你的 REGISTRY
-#    （或直接通过 REGISTRY 环境变量 + kustomize edit 覆盖）
-
-# 7. 若使用私有仓库，创建 imagePullSecrets
-kubectl create namespace game-fleet-system
-kubectl create secret docker-registry acr-secret \
-  --docker-server=registry.cn-beijing.aliyuncs.com \
-  --docker-username=<你的阿里云账号> \
-  --docker-password=<你的ACR密码> \
-  -n game-fleet-system
-
-# 8. 安装 CRD 到集群
+# 安装 CRD + 部署 Controller/API Server
 kubectl apply -f config/crds/
-
-# 9. 部署 Controller + API Server
 kubectl apply -k deploy/
 
-# 10. 编辑 config/samples/fleet-demo.yaml，将 image 改为你的游戏服镜像地址
-#     然后部署示例舰队
+# 部署示例舰队（先编辑 config/samples/fleet-demo.yaml 的 image）
 kubectl create namespace game-fleet-demo
 kubectl apply -f config/samples/fleet-demo.yaml
 
-# 11. 查看舰队状态
-kubectl get gameserverfleets -n game-fleet-demo
-kubectl describe gameserverfleet battle-royale-fleet -n game-fleet-demo
-
-# 12. 查看暖池
-kubectl get gameserverfleet battle-royale-fleet -o jsonpath='{.status.bufferPool}'
-
-# 13. 模拟匹配器分配一台游戏服
-kubectl apply -f config/samples/allocation-request.yaml
-
-# 14. 干运行模式——预览扩缩容决策，不做实际变更
+# 干运行模式——预览扩缩容决策
 kubectl annotate gameserverfleet battle-royale-fleet \
   director.gamefleet.io/dry-run="true" --overwrite
 
-# 15. 查看 Controller 日志
+# 查看舰队状态和日志
+kubectl get gameserverfleets -n game-fleet-demo
 kubectl logs -n game-fleet-system deploy/game-fleet-director-controller -f
 ```
 
-### 环境要求
+**环境：** Go 1.22+ · K8s 1.28+ · 容器镜像仓库 · Prometheus（可选）· Node Health Watcher（可选）
 
-- **Go 1.22+**（仅构建）
-- **Kubernetes 1.28+**（CRD + controller-runtime 依赖）
-- **容器镜像仓库**（阿里云 ACR / 腾讯云 TCR / 华为云 SWR / 自建 Harbor）
-- **Prometheus**（可选，用于自定义指标采集与 HPA 协同）
-- **Node Health Watcher**（可选，用于节点健康感知扩缩容）
+## 架构
+
+```
+.
+├── api/v1alpha1/               # CRD 类型定义
+│   ├── gameserverfleet_types.go
+│   ├── autoscalerpolicy_types.go
+│   └── gameserverallocation_types.go
+├── cmd/
+│   ├── controller/main.go      # Operator 入口（Manager + Reconciler 注册）
+│   └── apiserver/main.go       # REST API 入口（匹配器调用）
+├── pkg/
+│   ├── controller/             # FleetReconciler + AllocationReconciler + Scaler
+│   ├── drainer/                # 三阶段排水状态机 + 会话跟踪
+│   ├── pool/                   # 暖池管理器 + 四种分配策略
+│   ├── health/                 # NHW API 客户端 + 节点健康过滤
+│   ├── metrics/                # Prometheus 指标采集与抓取
+│   ├── api/                    # REST API Server（allocate / release / status）
+│   └── notifier/               # 飞书 + 钉钉通知
+├── config/                     # CRD manifests / RBAC / 示例资源
+├── deploy/                     # Kustomize 部署清单
+├── tests/                      # 集成测试 (envtest) + E2E
+└── .github/workflows/ci.yml    # CI：lint → test → build → integration
+```
+
+### 设计决策
+
+**为什么以玩家数为主指标？** CPU 和内存反映的是资源消耗，不是业务需求。一个满员服 CPU 40% 不该缩，一个空服 CPU 30% 可以缩。玩家数才是游戏服的"负载"定义。
+
+**为什么排水是三阶段而不是两阶段？** 两阶段（标记不可分配 → 等待删 Pod）漏了一环：你需要在停止新玩家进入后，等待当前对局结束。三阶段多出一个 Drain 阶段专门等会话清零。
+
+**为什么有暖池？** 游戏服 Pod 冷启动 30s+，玩家匹配进去等的体验不可接受。提前维护 N 台就绪服，匹配器 Allocate 即用。
+
+**节点健康感知** —— Controller 扩缩容前查询 NHW 的 `/api/v1/nodes`，过滤掉 CRITICAL 节点。NHW 不可用时降级为不过滤，不影响核心伸缩逻辑。
 
 ---
 
@@ -225,7 +197,7 @@ nodeHealth:
   minHealthyNodeRatio: 0.5
 ```
 
-> 若未部署 [Node Health Watcher](https://github.com/noneedtostudy/node-health-watcher)，请将 `enabled: false` 或留空 `nhwEndpoint`。
+> 若未部署 [Node Health Watcher](https://github.com/290298661-pixel/node-health-watcher)，请将 `enabled: false` 或留空 `nhwEndpoint`。
 
 ### 7. 伸缩策略参数（按游戏调优）
 
@@ -820,7 +792,7 @@ Controller 在 `:8080/metrics` 暴露以下 Prometheus 指标：
 
 ```bash
 # 克隆仓库
-git clone https://github.com/noneedtostudy/game-server-orchestrator.git
+git clone https://github.com/290298661-pixel/game-server-orchestrator.git
 cd game-server-orchestrator
 
 # 安装依赖
@@ -900,7 +872,7 @@ make test-e2e
 
 ## 许可证
 
-MIT © 2026 [Shaohan He](https://github.com/noneedtostudy)
+MIT © 2026 [Shaohan He](https://github.com/290298661-pixel)
 
 ---
 
@@ -912,7 +884,7 @@ MIT © 2026 [Shaohan He](https://github.com/noneedtostudy)
 
 ### Why Game Fleet Director?
 
-[node-health-watcher](https://github.com/noneedtostudy/node-health-watcher) answers "when to act" — it pushes IM alerts when nodes misbehave. [node-guardian](https://github.com/noneedtostudy/node-guardian) answers "how to fix it" — it provides a diagnostic and hardening toolchain when you SSH into a broken node.
+[node-health-watcher](https://github.com/290298661-pixel/node-health-watcher) answers "when to act" — it pushes IM alerts when nodes misbehave. [node-guardian](https://github.com/290298661-pixel/node-guardian) answers "how to fix it" — it provides a diagnostic and hardening toolchain when you SSH into a broken node.
 
 But neither answers **"who operates the game servers themselves"**:
 
@@ -946,7 +918,7 @@ But neither answers **"who operates the game servers themselves"**:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/noneedtostudy/game-server-orchestrator.git
+git clone https://github.com/290298661-pixel/game-server-orchestrator.git
 cd game-server-orchestrator
 
 # 2. Download Go dependencies
@@ -1330,7 +1302,7 @@ Exposed at `:8080/metrics`:
 ## Development
 
 ```bash
-git clone https://github.com/noneedtostudy/game-server-orchestrator.git
+git clone https://github.com/290298661-pixel/game-server-orchestrator.git
 cd game-server-orchestrator
 
 go mod download
@@ -1410,4 +1382,4 @@ All PRs are automatically linted and tested via GitHub Actions.
 
 ## License
 
-MIT © 2026 [Shaohan He](https://github.com/noneedtostudy)
+MIT © 2026 [Shaohan He](https://github.com/290298661-pixel)
