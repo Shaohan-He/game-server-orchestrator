@@ -1,0 +1,32 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: game-fleet-director-controller
+rules:
+  # CRD management
+  - apiGroups: ["director.gamefleet.io"]
+    resources:
+      - gameserverfleets
+      - gameserverfleets/status
+      - autoscalerpolicies
+      - autoscalerpolicies/status
+      - gameserverallocations
+      - gameserverallocations/status
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Pod management for game servers
+  - apiGroups: [""]
+    resources:
+      - pods
+      - pods/status
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Events for observability
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+
+  # Leader election (if enabled)
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

@@ -4,11 +4,11 @@ kind: Kustomization
 namespace: game-fleet-system
 
 resources:
-  - ../config/crds/gameserverfleets.yaml
-  - ../config/crds/autoscalerpolicies.yaml
-  - ../config/crds/gameserverallocations.yaml
-  - ../config/rbac/role.yaml
-  - ../config/rbac/role_binding.yaml
+  - gameserverfleets.yaml
+  - autoscalerpolicies.yaml
+  - gameserverallocations.yaml
+  - role.yaml
+  - role_binding.yaml
   - controller.yaml
   - apiserver.yaml
 

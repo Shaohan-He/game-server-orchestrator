@@ -1,0 +1,103 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: autoscalerpolicies.director.gamefleet.io
+spec:
+  group: director.gamefleet.io
+  names:
+    kind: AutoscalerPolicy
+    listKind: AutoscalerPolicyList
+    plural: autoscalerpolicies
+    singular: autoscalerpolicy
+    shortNames:
+      - asp
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required: ["minReplicas", "maxReplicas", "buffer", "scalingMetric", "cooldown", "drain", "allocation"]
+              properties:
+                minReplicas:
+                  type: integer
+                  minimum: 1
+                maxReplicas:
+                  type: integer
+                  minimum: 1
+                buffer:
+                  type: object
+                  required: ["size"]
+                  properties:
+                    size:
+                      type: integer
+                      minimum: 0
+                    idleTimeoutSeconds:
+                      type: integer
+                scalingMetric:
+                  type: object
+                  required: ["type", "targetValue"]
+                  properties:
+                    type:
+                      type: string
+                      enum: ["PlayersPerServer", "AllocationRate", "CPU", "Memory"]
+                    targetValue:
+                      type: integer
+                auxiliaryMetrics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      weight:
+                        type: number
+                cooldown:
+                  type: object
+                  properties:
+                    scaleUpSeconds:
+                      type: integer
+                    scaleDownSeconds:
+                      type: integer
+                drain:
+                  type: object
+                  required: ["timeoutSeconds", "intervalSeconds"]
+                  properties:
+                    timeoutSeconds:
+                      type: integer
+                    intervalSeconds:
+                      type: integer
+                    forceAfterSeconds:
+                      type: integer
+                allocation:
+                  type: object
+                  properties:
+                    strategy:
+                      type: string
+                      enum: ["FewestPlayers", "LowestLatency", "RoundRobin", "StrictBinPack"]
+                circuitBreaker:
+                  type: object
+                  properties:
+                    consecutiveFailures:
+                      type: integer
+                    cooldownPeriodSeconds:
+                      type: integer
+                nodeHealth:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                    provider:
+                      type: string
+                      enum: ["nhw", "static"]
+                    nhwEndpoint:
+                      type: string
+                    minHealthyNodeRatio:
+                      type: number

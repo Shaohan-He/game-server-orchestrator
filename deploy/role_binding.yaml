@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: game-fleet-director-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: game-fleet-director-controller
+subjects:
+  - kind: ServiceAccount
+    name: game-fleet-director-controller
+    namespace: game-fleet-system
