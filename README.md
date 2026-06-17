@@ -29,7 +29,7 @@
 
 ## 概述
 
-**Game Fleet Director** 是 K8s Operator，管理游戏服的扩缩容、排水和分配。通用 HPA 看不懂游戏逻辑——一个满员服的 40% CPU 要保护，一个空闲服的 30% CPU 可以回收。HPA 也看不懂玩家在线——直接 `kubectl delete pod` 会踢人下线。
+**Game Fleet Director** 是 K8s Operator，管理游戏服的扩缩容、排水和分配。通用 HPA 不懂游戏逻辑——一个满员服的 40% CPU 要保护，一个空闲服的 50% CPU 可以回收。HPA 也不懂玩家在线——一直接 `kubectl delete pod` 会踢人下线。
 
 Game Fleet Director 理解这些语义：以玩家数为主要伸缩指标、三阶段排水不丢一个玩家、预热暖池让匹配器即时分配。
 
@@ -43,7 +43,7 @@ Game Fleet Director 是 [三部曲](https://github.com/290298661-pixel) 的**第
 | [Node Health Watcher](https://github.com/290298661-pixel/node-health-watcher) | Python | 什么时候该去排查？ |
 | **Game Fleet Director** ← 你在这里 | Go | 谁来操作游戏服本身？ |
 
-**选 Go + K8s Operator 是因为** controller-runtime 是社区标准库，CRD + Controller 模式天然适合 GitOps。选 Operator 而非 CronJob 是因为排水需要状态机跨 reconcile 周期持久化，CronJob 的无状态模型承载不了。
+** Go + K8s Operator ** controller-runtime 是社区标准库，CRD + Controller 模式天然适合 GitOps。选 Operator 而非 CronJob 是因为排水需要状态机跨 reconcile 周期持久化，CronJob 的无状态模型承载不了。
 
 ### 核心原则
 
