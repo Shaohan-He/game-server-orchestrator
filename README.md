@@ -867,6 +867,7 @@ kubectl logs -n game-fleet-system deploy/game-fleet-director-controller -f
 - **Container image registry** (Alibaba Cloud ACR / Tencent Cloud TCR / Huawei Cloud SWR / self-hosted Harbor)
 - **Prometheus** (optional, for custom metrics collection & HPA coordination)
 - **Node Health Watcher** (optional, for node-health-aware scaling)
+- Review the sample manifests before applying them to a production cluster.
 
 ---
 
