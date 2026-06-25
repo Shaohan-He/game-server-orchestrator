@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/kubernetes-1.28%2B-326CE5" alt="K8s 1.28+">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License">
   <img src="https://img.shields.io/badge/platform-linux%2Famd64-lightgrey" alt="Linux/amd64">
-  <img src="https://github.com/290298661-pixel/game-server-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI">
+  <img src="https://github.com/Shaohan-He/game-server-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI">
 </p>
 ##该项目已被放弃,仅供参考!!!
 
@@ -39,12 +39,12 @@ Game Fleet Director 理解这些语义：以玩家数为主要伸缩指标、三
 
 ### 它在工具链中的位置
 
-Game Fleet Director 是 [三部曲](https://github.com/290298661-pixel) 的**第三环**——"行动层"：
+Game Fleet Director 是 [三部曲](https://github.com/Shaohan-He) 的**第三环**——"行动层"：
 
 | 项目 | 语言 | 回答的问题 |
 |------|------|-----------|
-| [Node Guardian](https://github.com/290298661-pixel/node-guardian) | Bash | 出了故障怎么排查和修复？ |
-| [Node Health Watcher](https://github.com/290298661-pixel/node-health-watcher) | Python | 什么时候该去排查？ |
+| [Node Guardian](https://github.com/Shaohan-He/node-guardian) | Bash | 出了故障怎么排查和修复？ |
+| [Node Health Watcher](https://github.com/Shaohan-He/node-health-watcher) | Python | 什么时候该去排查？ |
 | **Game Fleet Director** ← 你在这里 | Go | 谁来操作游戏服本身？ |
 
 ** Go + K8s Operator ** controller-runtime 是社区标准库，CRD + Controller 模式天然适合 GitOps。选 Operator 而非 CronJob 是因为排水需要状态机跨 reconcile 周期持久化，CronJob 的无状态模型承载不了。
@@ -65,7 +65,7 @@ Game Fleet Director 是 [三部曲](https://github.com/290298661-pixel) 的**第
 ## 快速开始
 
 ```bash
-git clone https://github.com/290298661-pixel/game-server-orchestrator.git && cd game-server-orchestrator
+git clone https://github.com/Shaohan-He/game-server-orchestrator.git && cd game-server-orchestrator
 go mod tidy && make build
 
 # 编辑 Makefile 的 REGISTRY 为你的镜像仓库地址，然后构建推送
@@ -215,7 +215,7 @@ nodeHealth:
   minHealthyNodeRatio: 0.5
 ```
 
-> 若未部署 [Node Health Watcher](https://github.com/290298661-pixel/node-health-watcher)，请将 `enabled: false` 或留空 `nhwEndpoint`。
+> 若未部署 [Node Health Watcher](https://github.com/Shaohan-He/node-health-watcher)，请将 `enabled: false` 或留空 `nhwEndpoint`。
 
 ### 7. 伸缩策略参数（按游戏调优）
 
@@ -683,7 +683,7 @@ Controller 在 `:8080/metrics` 暴露以下 Prometheus 指标：
 
 ```bash
 # 克隆仓库
-git clone https://github.com/290298661-pixel/game-server-orchestrator.git
+git clone https://github.com/Shaohan-He/game-server-orchestrator.git
 cd game-server-orchestrator
 
 # 安装依赖
@@ -763,7 +763,7 @@ make test-e2e
 
 ## 许可证
 
-MIT © 2026 [Shaohan He](https://github.com/290298661-pixel)
+MIT © 2026 [Shaohan He](https://github.com/Shaohan-He)
 
 ---
 
@@ -775,7 +775,7 @@ MIT © 2026 [Shaohan He](https://github.com/290298661-pixel)
 
 ### Why Game Fleet Director?
 
-[node-health-watcher](https://github.com/290298661-pixel/node-health-watcher) answers "when to act" — it pushes IM alerts when nodes misbehave. [node-guardian](https://github.com/290298661-pixel/node-guardian) answers "how to fix it" — it provides a diagnostic and hardening toolchain when you SSH into a broken node.
+[node-health-watcher](https://github.com/Shaohan-He/node-health-watcher) answers "when to act" — it pushes IM alerts when nodes misbehave. [node-guardian](https://github.com/Shaohan-He/node-guardian) answers "how to fix it" — it provides a diagnostic and hardening toolchain when you SSH into a broken node.
 
 But neither answers **"who operates the game servers themselves"**:
 
@@ -809,7 +809,7 @@ But neither answers **"who operates the game servers themselves"**:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/290298661-pixel/game-server-orchestrator.git
+git clone https://github.com/Shaohan-He/game-server-orchestrator.git
 cd game-server-orchestrator
 
 # 2. Download Go dependencies
@@ -1194,7 +1194,7 @@ Exposed at `:8080/metrics`:
 ## Development
 
 ```bash
-git clone https://github.com/290298661-pixel/game-server-orchestrator.git
+git clone https://github.com/Shaohan-He/game-server-orchestrator.git
 cd game-server-orchestrator
 
 go mod download
@@ -1274,4 +1274,4 @@ All PRs are automatically linted and tested via GitHub Actions.
 
 ## License
 
-MIT © 2026 [Shaohan He](https://github.com/290298661-pixel)
+MIT © 2026 [Shaohan He](https://github.com/Shaohan-He)

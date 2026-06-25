@@ -14,8 +14,8 @@ resources:
 
 images:
   - name: registry.cn-beijing.aliyuncs.com/noneedtostudy/game-fleet-director-controller
-    newName: ghcr.io/290298661-pixel/game-fleet-director-controller
+    newName: ghcr.io/Shaohan-He/game-fleet-director-controller
     newTag: latest
   - name: registry.cn-beijing.aliyuncs.com/noneedtostudy/game-fleet-director-apiserver
-    newName: ghcr.io/290298661-pixel/game-fleet-director-apiserver
+    newName: ghcr.io/Shaohan-He/game-fleet-director-apiserver
     newTag: latest
