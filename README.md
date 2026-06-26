@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/platform-linux%2Famd64-lightgrey" alt="Linux/amd64">
   <img src="https://github.com/Shaohan-He/game-server-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI">
 </p>
-##该项目已被放弃,仅供参考!!!
+## 实验性项目,仅供参考!!!
 
 ---
 
