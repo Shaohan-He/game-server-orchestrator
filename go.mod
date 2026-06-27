@@ -1,4 +1,4 @@
-module github.com/noneedtostudy/game-server-orchestrator
+module github.com/Shaohan-He/game-server-orchestrator
 
 go 1.22.0
 

@@ -13,9 +13,9 @@ resources:
   - apiserver.yaml
 
 images:
-  - name: registry.cn-beijing.aliyuncs.com/noneedtostudy/game-fleet-director-controller
-    newName: ghcr.io/Shaohan-He/game-fleet-director-controller
+  - name: ghcr.io/shaohan-he/game-fleet-director-controller
+    newName: ghcr.io/shaohan-he/game-fleet-director-controller
     newTag: latest
-  - name: registry.cn-beijing.aliyuncs.com/noneedtostudy/game-fleet-director-apiserver
-    newName: ghcr.io/Shaohan-He/game-fleet-director-apiserver
+  - name: ghcr.io/shaohan-he/game-fleet-director-apiserver
+    newName: ghcr.io/shaohan-he/game-fleet-director-apiserver
     newTag: latest

@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/controller"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/drainer"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/metrics"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/controller"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/drainer"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/metrics"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,9 +26,9 @@ import (
 )
 
 var (
-	scheme  *runtime.Scheme
-	testEnv *envtest.Environment
-	k8sClient client.Client
+	scheme     *runtime.Scheme
+	testEnv    *envtest.Environment
+	k8sClient  client.Client
 	cancelFunc context.CancelFunc
 )
 
@@ -117,7 +117,7 @@ func TestFleetCreation(t *testing.T) {
 			MinReplicas: 2,
 			MaxReplicas: 10,
 			Buffer: v1alpha1.BufferConfig{
-				Size:              2,
+				Size:               2,
 				IdleTimeoutSeconds: 300,
 			},
 			ScalingMetric: v1alpha1.ScalingMetricConfig{
@@ -129,8 +129,8 @@ func TestFleetCreation(t *testing.T) {
 				ScaleDownSeconds: 300,
 			},
 			Drain: v1alpha1.DrainConfig{
-				TimeoutSeconds:   600,
-				IntervalSeconds:  30,
+				TimeoutSeconds:    600,
+				IntervalSeconds:   30,
 				ForceAfterSeconds: 1800,
 			},
 			Allocation: v1alpha1.AllocationConfig{
@@ -299,8 +299,8 @@ func TestFleetReconcilerSetup(t *testing.T) {
 
 	pm := pool.NewPoolManager(nil)
 	dr := drainer.New(v1alpha1.DrainConfig{
-		TimeoutSeconds:   600,
-		IntervalSeconds:  30,
+		TimeoutSeconds:    600,
+		IntervalSeconds:   30,
 		ForceAfterSeconds: 1800,
 	}, drainer.NewSessionTracker(2*time.Second))
 	scaler := controller.NewScaler(nil)

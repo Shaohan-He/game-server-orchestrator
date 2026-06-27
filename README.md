@@ -557,7 +557,7 @@ status:
 
 | 变量 | 默认值 | 说明 |
 |------|-------|------|
-| `REGISTRY` | `registry.cn-beijing.aliyuncs.com/noneedtostudy` | **部署前必改。** 镜像仓库地址，按你的云厂商和地域修改 |
+| `REGISTRY` | `ghcr.io/shaohan-he` | **部署前必改。** 镜像仓库地址，按你的云厂商和地域修改 |
 | `TAG` | `v0.1.0` | 镜像版本标签 |
 | `GOPROXY` | `https://goproxy.cn,direct` | Go 模块代理。国内用户保留此设置；海外用户可设为 `https://proxy.golang.org,direct` |
 
@@ -881,7 +881,7 @@ The following items use **placeholder values** in the repository. **You must cha
 
 | # | What to change | Where | Why |
 |---|---------------|-------|-----|
-| 1 | **Container registry URL** | `Makefile` L5, `deploy/controller.yaml`, `deploy/apiserver.yaml`, `deploy/kustomization.yaml` | Default points to a non-existent ACR namespace |
+| 1 | **Container registry URL** | `Makefile` L5, `deploy/controller.yaml`, `deploy/apiserver.yaml`, `deploy/kustomization.yaml` | Default points to this repository's GHCR namespace |
 | 2 | **Go module proxy** | `Makefile` L9 (`GOPROXY`) | Developers outside China should remove or change `goproxy.cn` |
 | 3 | **Image pull secret** | `deploy/controller.yaml` → uncomment `imagePullSecrets` | Required for private registries |
 | 4 | **Game server image** | `config/samples/fleet-demo.yaml` → `.spec.template.spec.containers[0].image` | Placeholder image will never pull successfully |
@@ -1133,7 +1133,7 @@ A matchmaker-issued game server allocation request — declarative, auditable, s
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `REGISTRY` | `registry.cn-beijing.aliyuncs.com/noneedtostudy` | **Must change before deploy.** Your container registry address. |
+| `REGISTRY` | `ghcr.io/shaohan-he` | **Must change before deploy.** Your container registry address. |
 | `TAG` | `v0.1.0` | Image version tag. |
 | `GOPROXY` | `https://goproxy.cn,direct` | Go module proxy. Developers outside China should use `https://proxy.golang.org,direct`. |
 

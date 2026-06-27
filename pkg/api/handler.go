@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/controller"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/metrics"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/controller"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/metrics"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 )
 
 // Handler holds references to the domain services needed by the REST API.
@@ -162,4 +162,3 @@ func writeJSON(w http.ResponseWriter, status int, v interface{}) {
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(v)
 }
-

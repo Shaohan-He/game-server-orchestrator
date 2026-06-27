@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/metrics"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/metrics"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

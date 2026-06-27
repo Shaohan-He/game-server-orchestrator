@@ -3,7 +3,7 @@ package pool
 import (
 	"sort"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
 )
 
 // GameServerInfo holds runtime data for a candidate game server.

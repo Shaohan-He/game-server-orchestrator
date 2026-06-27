@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/api"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/controller"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/api"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/controller"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"

@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/health"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/health"
 )
 
 // FleetPoolConfig holds per-fleet configuration used by the pool manager.
@@ -21,11 +21,11 @@ type FleetPoolConfig struct {
 // PoolManager tracks game server pool state on a per-fleet basis.
 // Each fleet has its own isolated pool of servers.
 type PoolManager struct {
-	mu              sync.Mutex
-	pools           map[string]map[string]*ServerPoolState // fleetName -> serverName -> state
-	configs         map[string]FleetPoolConfig              // fleetName -> config
-	roundRobinIdx   map[string]int                         // fleetName -> next index for round-robin
-	nodeFilter      *health.NodeFilter
+	mu            sync.Mutex
+	pools         map[string]map[string]*ServerPoolState // fleetName -> serverName -> state
+	configs       map[string]FleetPoolConfig             // fleetName -> config
+	roundRobinIdx map[string]int                         // fleetName -> next index for round-robin
+	nodeFilter    *health.NodeFilter
 }
 
 // ServerPoolState tracks the runtime state of a single game server in a pool.

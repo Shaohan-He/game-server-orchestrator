@@ -1,8 +1,8 @@
 .PHONY: all build test lint vet generate clean docker-build docker-push deploy install-crds dev-up dev-down
 
 # Image registry and tag.
-# 国内默认使用阿里云容器镜像服务 ACR，可按需改为腾讯云 TCR 或华为云 SWR
-REGISTRY    ?= registry.cn-beijing.aliyuncs.com/noneedtostudy
+# Default image registry. Override REGISTRY for another registry if needed.
+REGISTRY    ?= ghcr.io/shaohan-he
 TAG         ?= v0.1.0
 CONTROLLER_IMG := $(REGISTRY)/game-fleet-director-controller:$(TAG)
 APISERVER_IMG  := $(REGISTRY)/game-fleet-director-apiserver:$(TAG)

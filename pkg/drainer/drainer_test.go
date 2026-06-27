@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
 )
 
 type mockSessionQuerier struct {
@@ -19,8 +19,8 @@ func (m *mockSessionQuerier) ActiveSessions(ctx context.Context, endpoint string
 
 func testDrainConfig(timeout, interval, force int32) v1alpha1.DrainConfig {
 	return v1alpha1.DrainConfig{
-		TimeoutSeconds:  timeout,
-		IntervalSeconds: interval,
+		TimeoutSeconds:    timeout,
+		IntervalSeconds:   interval,
 		ForceAfterSeconds: force,
 	}
 }

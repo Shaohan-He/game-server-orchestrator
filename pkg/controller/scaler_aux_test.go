@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
 )
 
 func makePolicyWithAux(min, max, targetPlayers, bufferSize int32, auxMetrics []v1alpha1.AuxiliaryMetricConfig) *v1alpha1.AutoscalerPolicy {
@@ -13,7 +13,7 @@ func makePolicyWithAux(min, max, targetPlayers, bufferSize int32, auxMetrics []v
 			MinReplicas: min,
 			MaxReplicas: max,
 			Buffer: v1alpha1.BufferConfig{
-				Size:              bufferSize,
+				Size:               bufferSize,
 				IdleTimeoutSeconds: 300,
 			},
 			ScalingMetric: v1alpha1.ScalingMetricConfig{

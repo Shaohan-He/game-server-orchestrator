@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/health"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/health"
 )
 
 type ScaleDecision string
@@ -18,13 +18,13 @@ const (
 )
 
 type ScaleResult struct {
-	Decision       ScaleDecision
+	Decision        ScaleDecision
 	CurrentReplicas int32
 	DesiredReplicas int32
-	Delta          int32
-	Reason         string
-	HealthyNodes   []string
-	FilteredNodes  []string
+	Delta           int32
+	Reason          string
+	HealthyNodes    []string
+	FilteredNodes   []string
 }
 
 type Scaler struct {

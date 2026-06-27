@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/controller"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/drainer"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/health"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/metrics"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/notifier"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/controller"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/drainer"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/health"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/metrics"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/notifier"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -135,8 +135,8 @@ func main() {
 
 	// Build a default drain config; real config is loaded per-fleet from policy.
 	defaultDrain := v1alpha1.DrainConfig{
-		TimeoutSeconds:   600,
-		IntervalSeconds:  30,
+		TimeoutSeconds:    600,
+		IntervalSeconds:   30,
 		ForceAfterSeconds: 1800,
 	}
 	dr := drainer.New(defaultDrain, drainTracker)

@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/drainer"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/metrics"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/notifier"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/pool"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/drainer"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/metrics"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/notifier"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/pool"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,12 +25,12 @@ import (
 // FleetReconciler reconciles GameServerFleet resources.
 type FleetReconciler struct {
 	client.Client
-	Scheme    *runtime.Scheme
-	Scaler    *Scaler
-	Drainer   *drainer.Drainer
-	PoolMgr   *pool.PoolManager
-	Notifier  *notifier.Notifier
-	Scraper   *metrics.Scraper
+	Scheme   *runtime.Scheme
+	Scaler   *Scaler
+	Drainer  *drainer.Drainer
+	PoolMgr  *pool.PoolManager
+	Notifier *notifier.Notifier
+	Scraper  *metrics.Scraper
 
 	// Circuit breaker state per fleet.
 	cbMu                sync.RWMutex
@@ -156,14 +156,14 @@ func (r *FleetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	if result.Decision != ScaleHold && r.Notifier != nil {
 		r.Notifier.NotifyScalingEvent(ctx, notifier.ScalingEvent{
-			Timestamp:        time.Now(),
-			Fleet:            req.Name,
-			Namespace:        req.Namespace,
-			Decision:         string(result.Decision),
-			CurrentReplicas:  result.CurrentReplicas,
-			DesiredReplicas:  result.DesiredReplicas,
-			Reason:           result.Reason,
-			Nodes:            result.HealthyNodes,
+			Timestamp:       time.Now(),
+			Fleet:           req.Name,
+			Namespace:       req.Namespace,
+			Decision:        string(result.Decision),
+			CurrentReplicas: result.CurrentReplicas,
+			DesiredReplicas: result.DesiredReplicas,
+			Reason:          result.Reason,
+			Nodes:           result.HealthyNodes,
 		})
 	}
 

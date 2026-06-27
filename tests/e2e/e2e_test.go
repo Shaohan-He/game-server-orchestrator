@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -118,7 +118,7 @@ func TestFleetLifecycle(t *testing.T) {
 			MinReplicas: 1,
 			MaxReplicas: 5,
 			Buffer: v1alpha1.BufferConfig{
-				Size:              2,
+				Size:               2,
 				IdleTimeoutSeconds: 60,
 			},
 			ScalingMetric: v1alpha1.ScalingMetricConfig{
@@ -130,8 +130,8 @@ func TestFleetLifecycle(t *testing.T) {
 				ScaleDownSeconds: 120,
 			},
 			Drain: v1alpha1.DrainConfig{
-				TimeoutSeconds:   300,
-				IntervalSeconds:  30,
+				TimeoutSeconds:    300,
+				IntervalSeconds:   30,
 				ForceAfterSeconds: 600,
 			},
 			Allocation: v1alpha1.AllocationConfig{

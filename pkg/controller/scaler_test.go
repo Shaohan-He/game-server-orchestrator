@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/noneedtostudy/game-server-orchestrator/api/v1alpha1"
-	"github.com/noneedtostudy/game-server-orchestrator/pkg/health"
+	"github.com/Shaohan-He/game-server-orchestrator/api/v1alpha1"
+	"github.com/Shaohan-He/game-server-orchestrator/pkg/health"
 )
 
 func makeFleet(replicas, allocated, draining, buffer, players int32, paused bool) *v1alpha1.GameServerFleet {
@@ -14,7 +14,7 @@ func makeFleet(replicas, allocated, draining, buffer, players int32, paused bool
 			Paused: paused,
 		},
 		Status: v1alpha1.GameServerFleetStatus{
-			Replicas:         replicas,
+			Replicas:          replicas,
 			AllocatedReplicas: allocated,
 			DrainingReplicas:  draining,
 			BufferPool:        buffer,
@@ -29,7 +29,7 @@ func makePolicy(min, max, targetPlayers, bufferSize int32, nodeHealthEnabled boo
 			MinReplicas: min,
 			MaxReplicas: max,
 			Buffer: v1alpha1.BufferConfig{
-				Size:              bufferSize,
+				Size:               bufferSize,
 				IdleTimeoutSeconds: 300,
 			},
 			ScalingMetric: v1alpha1.ScalingMetricConfig{
